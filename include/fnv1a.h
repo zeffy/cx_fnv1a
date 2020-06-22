@@ -10,24 +10,21 @@ struct basic_fnv1a
 {
   using type = T;
 
-  struct details
+  template <class Char>
+  static constexpr Char ascii_tolower(Char c)
   {
-    template <class Char>
-    static constexpr Char ascii_tolower(Char c)
-    {
-      if ( c >= 'A' && c <= 'Z' )
-        return c - ('A' - 'a');
-      return c;
-    }
+    if ( c >= 'A' && c <= 'Z' )
+      return c - ('A' - 'a');
+    return c;
+  }
 
-    template <class Char>
-    static constexpr Char ascii_toupper(Char c)
-    {
-      if ( c >= 'a' && c <= 'z' )
-        return c - ('a' - 'A');
-      return c;
-    }
-  };
+  template <class Char>
+  static constexpr Char ascii_toupper(Char c)
+  {
+    if ( c >= 'a' && c <= 'z' )
+      return c - ('a' - 'A');
+    return c;
+  }
 
   template <typename Char, typename Traits = std::char_traits<Char>>
   static constexpr T make_hash(
