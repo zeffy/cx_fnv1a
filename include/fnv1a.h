@@ -97,11 +97,11 @@ inline constexpr auto operator"" _fnv1a32(const wchar_t *s, std::size_t len)
 }
 inline constexpr auto operator"" _fnv1a32u(const wchar_t *s, std::size_t len)
 {
-  return fnv1a32::make_hash(s, len, fnv1a32::details::ascii_toupper);
+  return fnv1a32::make_hash(s, len, fnv1a32::ascii_toupper);
 }
 inline constexpr auto operator"" _fnv1a32l(const wchar_t *s, std::size_t len)
 {
-  return fnv1a32::make_hash(s, len, fnv1a32::details::ascii_tolower);
+  return fnv1a32::make_hash(s, len, fnv1a32::ascii_tolower);
 }
 inline constexpr auto operator"" _fnv1a64(const char *s, std::size_t len)
 {
@@ -113,11 +113,11 @@ inline constexpr auto operator"" _fnv1a64(const wchar_t *s, std::size_t len)
 }
 inline constexpr auto operator"" _fnv1a64u(const wchar_t *s, std::size_t len)
 {
-  return fnv1a64::make_hash(s, len, fnv1a64::details::ascii_toupper);
+  return fnv1a64::make_hash(s, len, fnv1a64::ascii_toupper);
 }
 inline constexpr auto operator"" _fnv1a64l(const wchar_t *s, std::size_t len)
 {
-  return fnv1a64::make_hash(s, len, fnv1a64::details::ascii_tolower);
+  return fnv1a64::make_hash(s, len, fnv1a64::ascii_tolower);
 }
 
 #ifdef _M_X64
@@ -132,11 +132,11 @@ inline constexpr auto operator"" _fnv1a(const char *s, std::size_t len)
 }
 inline constexpr auto operator"" _fnv1au(const char *s, std::size_t len)
 {
-  return fnv1a::make_hash(s, len, fnv1a::details::ascii_toupper);
+  return fnv1a::make_hash(s, len, fnv1a::ascii_toupper);
 }
 inline constexpr auto operator"" _fnv1al(const char *s, std::size_t len)
 {
-  return fnv1a::make_hash(s, len, fnv1a::details::ascii_tolower);
+  return fnv1a::make_hash(s, len, fnv1a::ascii_tolower);
 }
 
 inline constexpr auto operator"" _fnv1a(const wchar_t *s, std::size_t len)
@@ -145,9 +145,9 @@ inline constexpr auto operator"" _fnv1a(const wchar_t *s, std::size_t len)
 }
 inline constexpr auto operator"" _fnv1au(const wchar_t *s, std::size_t len)
 {
-  return fnv1a::make_hash(s, len, fnv1a::details::ascii_toupper);
+  return fnv1a::make_hash(s, len, fnv1a::ascii_toupper);
 }
 inline constexpr auto operator"" _fnv1al(const wchar_t *s, std::size_t len)
 {
-  return fnv1a::make_hash(s, len, fnv1a::details::ascii_tolower);
+  return fnv1a::make_hash(s, len, fnv1a::ascii_tolower);
 }
