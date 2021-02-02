@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <span>
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -10,16 +11,16 @@ struct basic_fnv1a
 {
   using type = T;
 
-  template <class Char>
-  static constexpr Char ascii_tolower(Char c)
+  template <class Int>
+  static constexpr Int ascii_tolower(Int c)
   {
     if ( c >= 'A' && c <= 'Z' )
       return c - ('A' - 'a');
     return c;
   }
 
-  template <class Char>
-  static constexpr Char ascii_toupper(Char c)
+  template <class Int>
+  static constexpr Int ascii_toupper(Int c)
   {
     if ( c >= 'a' && c <= 'z' )
       return c - ('a' - 'A');
@@ -28,9 +29,10 @@ struct basic_fnv1a
 
   ///////////////////////////////////////////////////////////////////////////////
 
+  template <class Traits = std::char_traits<char>>
   static constexpr T make_hash(
     const char *s,
-    char(*fx)(char) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( ; *s; ++s ) {
@@ -41,9 +43,10 @@ struct basic_fnv1a
     return hash;
   }
 
+  template <class Traits = std::char_traits<wchar_t>>
   static constexpr T make_hash(
     const wchar_t *s,
-    wchar_t(*fx)(wchar_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( ; *s; ++s ) {
@@ -57,9 +60,10 @@ struct basic_fnv1a
   }
 
 #if defined(__cpp_char8_t)
+  template <class Traits = std::char_traits<char8_t>>
   static constexpr T make_hash(
     const char8_t *s,
-    char8_t(*fx)(char8_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( ; *s; ++s ) {
@@ -70,10 +74,12 @@ struct basic_fnv1a
     return hash;
   }
 #endif
+
 #if defined(__cpp_unicode_characters)
+  template <class Traits = std::char_traits<char16_t>>
   static constexpr T make_hash(
     const char16_t *s,
-    char16_t(*fx)(char16_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( ; *s; ++s ) {
@@ -86,9 +92,10 @@ struct basic_fnv1a
     return hash;
   }
 
+  template <class Traits = std::char_traits<char32_t>>
   static constexpr T make_hash(
     const char32_t *s,
-    char32_t(*fx)(char32_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( ; *s; ++s ) {
@@ -111,10 +118,11 @@ struct basic_fnv1a
 
   ///////////////////////////////////////////////////////////////////////////////
 
+  template <class Traits = std::char_traits<char>>
   static constexpr T make_hash(
     const char *s,
     std::size_t size,
-    char(*fx)(char) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( std::size_t i = 0; i < size; ++i ) {
@@ -125,10 +133,11 @@ struct basic_fnv1a
     return hash;
   }
 
+  template <class Traits = std::char_traits<wchar_t>>
   static constexpr T make_hash(
     const wchar_t *s,
     std::size_t size,
-    wchar_t(*fx)(wchar_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( std::size_t i = 0; i < size; ++i ) {
@@ -142,10 +151,11 @@ struct basic_fnv1a
   }
 
 #if defined(__cpp_char8_t)
+  template <class Traits = std::char_traits<char8_t>>
   static constexpr T make_hash(
     const char8_t *s,
     std::size_t size,
-    char8_t(*fx)(char8_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( std::size_t i = 0; i < size; ++i ) {
@@ -156,11 +166,13 @@ struct basic_fnv1a
     return hash;
   }
 #endif
+
 #if defined(__cpp_unicode_characters)
+  template <class Traits = std::char_traits<char16_t>>
   static constexpr T make_hash(
     const char16_t *s,
     std::size_t size,
-    char16_t(*fx)(char16_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( std::size_t i = 0; i < size; ++i ) {
@@ -172,10 +184,11 @@ struct basic_fnv1a
     }
     return hash;
   }
+  template <class Traits = std::char_traits<char32_t>>
   static constexpr T make_hash(
     const char32_t *s,
     std::size_t size,
-    char32_t(*fx)(char32_t) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     T hash = OffsetBasis;
     for ( std::size_t i = 0; i < size; ++i ) {
@@ -196,28 +209,44 @@ struct basic_fnv1a
   }
 #endif
 
-  template <typename Char, typename Traits>
+  template <class Char, std::size_t Size, class Traits = std::char_traits<char32_t>>
   static inline constexpr T make_hash(
-    const std::basic_string_view<Char, Traits> &s,
-     Char(*fx)(Char) = nullptr)
+    const Char(&s)[Size],
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
-    return make_hash(s.data(), s.size(), fx);
+    return make_hash(s, Size, fx);
   }
 
-  template <typename Char, std::size_t Size>
+  template <class Char, std::size_t Size, class Traits = std::char_traits<char32_t>>
   static inline constexpr T make_hash(
     const std::array<Char, Size> &s,
-    Char(*fx)(Char) = nullptr)
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
+  {
+    return make_hash(s.data(), Size, fx);
+  }
+
+  template <class Char, typename Traits = std::char_traits<Char>, typename Alloc = std::allocator<Char>>
+  static inline constexpr T make_hash(
+    const std::basic_string<Char, Traits, Alloc> &s,
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
     return make_hash(s.data(), s.size(), fx);
   }
 
-  template <typename Char, typename Traits, typename Alloc>
-  static inline T make_hash(
-    const std::basic_string<Char, Traits, Alloc> &s,
-    Char(*fx)(Char) = nullptr)
+  template <class Char, typename Traits = std::char_traits<Char>>
+  static inline constexpr T make_hash(
+    const std::basic_string_view<Char, Traits> &s,
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
   {
-    return make_hash(s.c_str(), s.size(), fx);
+    return make_hash(s.data(), s.size(), fx);
+  }
+
+  template <class Char, typename Traits = std::char_traits<Char>>
+  static inline constexpr T make_hash(
+    const std::span<Char> &s,
+    typename Traits::int_type(*fx)(typename Traits::int_type) = nullptr)
+  {
+    return make_hash(s.data(), s.size(), fx);
   }
 };
 
